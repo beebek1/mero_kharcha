@@ -4,3 +4,4 @@ __pycache__/
 user_database.db
 crop image.png
 test.py
+.DS_Store
