@@ -1,29 +1,27 @@
 from main_database import get_db_connection
 
-def get_unique_notes(user_id):
-    """Fetch unique notes for a user from the transactions table."""
-    conn = get_db_connection()
-    cursor = conn.cursor()
+# def get_unique_notes(user_id):
+#     """Fetch unique notes for a user from the transactions table."""
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
     
-    cursor.execute(
-        "SELECT DISTINCT notes FROM transactions WHERE user_id = ?",
-        (user_id,)
-    )
+#     cursor.execute(
+#         "SELECT DISTINCT notes FROM transactions WHERE user_id = ?",
+#         (user_id,)
+#     )
     
-    notes = cursor.fetchall()
-    conn.close()
+#     notes = cursor.fetchall()
+#     conn.close()
 
-    # Extracting notes from the fetched results
-    unique_notes=[]
-    for note in notes:
-        unique = note[0]
-        unique2=unique.lower()
-        unique_notes.append(unique2)
-
-    print (unique_notes)
+#     # Extracting notes from the fetched results
+#     unique_notes=[]
+#     for note in notes:
+#         unique = note[0]
+#         unique2=unique.lower()
+#         unique_notes.append(unique2)
   
-   # Convert list of tuples to a list of strings
-    return unique_notes
+#    # Convert list of tuples to a list of strings
+#     return unique_notes
  
 def get_transactions(user_id, type=None):
     """Fetch transactions for a user and return total income, expense, final amount, and unique notes."""
@@ -70,7 +68,6 @@ def get_transactions(user_id, type=None):
     final_amount = total_income - total_expense
     
     # Fetch unique notes
-    unique_notes = get_unique_notes(user_id)
+    # unique_notes = get_unique_notes(user_id)
 
-    return transaction_list, total_expense, total_income, final_amount, unique_notes
-
+    return transaction_list, total_expense, total_income, final_amount
