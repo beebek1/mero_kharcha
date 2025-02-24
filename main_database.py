@@ -34,12 +34,13 @@ def create_tables():
             notes TEXT,
             type TEXT NOT NULL CHECK(type IN ('income', 'expense')),
             month_year TEXT NOT NULL,
-            time TEXT NOT NULL
+            time TEXT NOT NULL,
+            day TEXT NOT NULL
         )
     ''')
 
     conn.commit()
     conn.close()
 
-# create_tables()
+create_tables()
 

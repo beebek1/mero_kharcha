@@ -26,30 +26,31 @@ def get_transactions(user_id, type=None):
 
     if type:
         cursor.execute(
-            "id, SELECT amount, category, notes, type, month_year, time FROM transactions WHERE user_id = ? AND type = ?",
+            "SELECT id, amount, category, notes, type, month_year, time, day FROM transactions WHERE user_id = ? AND type = ?",
             (user_id, type)
         )
     else:
         cursor.execute(
-            "id, SELECT amount, category, notes, type, month_year, time FROM transactions WHERE user_id = ?",
+            "SELECT id, amount, category, notes, type, month_year, time, day FROM transactions WHERE user_id = ?",
             (user_id,)
         )
     
     transactions = cursor.fetchall()
     conn.close()
-    
+
     transaction_list = []
     for t in transactions:
-        transaction_id ,amount, category, notes, type, month_year, time = t
-        transaction_dict = {
-            "id":transaction_id,
-            "amount": float(amount),
-            "category": category,
-            "notes": notes,
-            "type": type,
-            "month_year": month_year,
-            "time": time
-        }
+        transaction_id ,amount, category, notes, type, month_year, time, day = t
+        transaction_dict=({
+                "id":transaction_id,
+                "amount": float(amount),
+                "category": category,
+                "notes": notes,
+                "type": type,
+                "month_year": month_year,
+                "time": time,
+                "day": day,
+            })
         transaction_list.append(transaction_dict)
 
     total_expense = 0
@@ -65,4 +66,8 @@ def get_transactions(user_id, type=None):
     # Fetch unique notes
     unique_notes = get_unique_notes(user_id)
 
-    return transaction_id, total_expense, total_income, final_amount, unique_notes
+    print(transaction_list)
+
+    return transaction_list, total_expense, total_income, final_amount, unique_notes
+
+get_transactions(1)

@@ -48,7 +48,7 @@ def adding_data():
     #get month, year, day and time
     month=now.strftime("%B")
     year=now.strftime('%Y')
-    day=now.strftime('%d')
+    day_c=now.strftime('%d')
     current_time=now.strftime('%I:%M %p')
 
     image=tk.PhotoImage(file='/Users/bibek/Desktop/new_python/Tkinter/crop image.png')
@@ -67,11 +67,12 @@ def adding_data():
         notes = note_entry.get("1.0", tk.END).strip()  # Get notes and strip whitespace
         month_year = f"{month} {year}"
         time = current_time # Get the current time
+        day = day_c
         type = "expense" if category in expense_category else "income"  # Determine type based on category selection
 
          # Save the transaction to the database
         try:
-            add_transaction(1, amount, category, notes, type, month_year, time)
+            add_transaction(1, amount, category, notes, type, month_year, time, day)
             messagebox.showinfo("Success", "Transaction saved successfully!")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save transaction: {e}")
@@ -111,7 +112,7 @@ def adding_data():
 
         #time and date 
         month_label=tk.Label(add_expense,text=month,bg=BG_color,fg=FG_color )
-        day_label=tk.Label(add_expense,text=f'{day},',bg=BG_color,fg=FG_color )
+        day_label=tk.Label(add_expense,text=f'{day_c},',bg=BG_color,fg=FG_color )
         year_label=tk.Label(add_expense,text=year,bg=BG_color,fg=FG_color )
         current_time_label=tk.Label(add_expense, text=current_time,bg=BG_color,fg=FG_color)
 
@@ -169,7 +170,7 @@ def adding_data():
 
         #time and date 
         month_label=tk.Label(add_income,text=month,bg=BG_color,fg=FG_color )
-        day_label=tk.Label(add_income,text=f'{day},',bg=BG_color,fg=FG_color )
+        day_label=tk.Label(add_income,text=f'{day_c},',bg=BG_color,fg=FG_color )
         year_label=tk.Label(add_income,text=year,bg=BG_color,fg=FG_color )
         current_time_label=tk.Label(add_income, text=current_time,bg=BG_color,fg=FG_color)
 
