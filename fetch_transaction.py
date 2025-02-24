@@ -12,13 +12,19 @@ def get_unique_notes(user_id):
     
     notes = cursor.fetchall()
     conn.close()
-    
+
     # Extracting notes from the fetched results
-    unique_notes = [note[0] for note in notes]  # Convert list of tuples to a list of strings
+    unique_notes=[]
+    for note in notes:
+        unique = note[0]
+        unique2=unique.lower()
+        unique_notes.append(unique2)
+
+    print (unique_notes)
+  
+   # Convert list of tuples to a list of strings
     return unique_notes
-
-
-
+ 
 def get_transactions(user_id, type=None):
     """Fetch transactions for a user and return total income, expense, final amount, and unique notes."""
     conn = get_db_connection()
@@ -66,8 +72,5 @@ def get_transactions(user_id, type=None):
     # Fetch unique notes
     unique_notes = get_unique_notes(user_id)
 
-    print(transaction_list)
-
     return transaction_list, total_expense, total_income, final_amount, unique_notes
 
-get_transactions(1)
