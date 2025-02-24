@@ -1,7 +1,6 @@
 __pycache__/
 *.pyc 
 
-user_database.db
-crop image.png
+
 test.py
 .DS_Store

@@ -2,8 +2,9 @@ import tkinter as tk
 from adding_items import adding_data
 from datetime import datetime
 from fetch_transaction import get_transactions
-from tkinter import font
+from tkinter import font 
 from tkinter import ttk
+from tkinter import messagebox
 
 root = tk.Tk()
 root.title("Dashboard") #added name to the window
@@ -12,7 +13,35 @@ root.configure(bg='#5C7285') #for background color
 
 
 #get data from database
-transaction_list, total_expense, total_income, final_amount=get_transactions(1)
+transaction_list, total_expense, total_income, final_amount,notes=get_transactions(1)
+
+#Toplevel for search button
+def search_note():
+
+    search= tk.Toplevel(root)
+    search.geometry('300x300')
+    search.title("Add data")
+    search.configure(bg='white')
+
+    search_query = entry.get().strip()  # Get the search input
+
+    # Search for the note
+    if search_query in notes:
+        messagebox.showinfo("Search Result", f"'{search_query}' found!")
+    else:
+        messagebox.showinfo("Search Result", f"'{search_query}' not found.")
+
+    search.mainloop()
+
+
+# Create an entry widget for note search
+entry = tk.Entry(root, font=("Arial", 14), width=30)
+entry.place(x=350,y=80)
+
+# Create a search button
+search_button = tk.Button(root, text="Search", font=("Arial", 14), command=search_note)
+search_button.place(x=440,y=80)
+
 
 style = ttk.Style(root)
 style.theme_use('alt')  # 'clam' is a more neutral theme
@@ -138,5 +167,7 @@ categories_button= ttk.Button(root, text = 'Categories', command= lambda : [root
 adding_data_button.place(x=40, y=555)
 analysis_button.place(x=255, y=555)
 categories_button.place(x=440, y=555)
+
+print(notes)
 
 root.mainloop()
