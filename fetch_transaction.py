@@ -26,12 +26,12 @@ def get_transactions(user_id, type=None):
 
     if type:
         cursor.execute(
-            "SELECT amount, category, notes, type, month_year, time FROM transactions WHERE user_id = ? AND type = ?",
+            "id, SELECT amount, category, notes, type, month_year, time FROM transactions WHERE user_id = ? AND type = ?",
             (user_id, type)
         )
     else:
         cursor.execute(
-            "SELECT amount, category, notes, type, month_year, time FROM transactions WHERE user_id = ?",
+            "id, SELECT amount, category, notes, type, month_year, time FROM transactions WHERE user_id = ?",
             (user_id,)
         )
     
@@ -40,8 +40,9 @@ def get_transactions(user_id, type=None):
     
     transaction_list = []
     for t in transactions:
-        amount, category, notes, type, month_year, time = t
+        transaction_id ,amount, category, notes, type, month_year, time = t
         transaction_dict = {
+            "id":transaction_id,
             "amount": float(amount),
             "category": category,
             "notes": notes,
@@ -64,4 +65,4 @@ def get_transactions(user_id, type=None):
     # Fetch unique notes
     unique_notes = get_unique_notes(user_id)
 
-    return transaction_list, total_expense, total_income, final_amount, unique_notes
+    return transaction_id, total_expense, total_income, final_amount, unique_notes
