@@ -100,10 +100,10 @@ final_amount_label= tk.Label(root, text= final_amount, font=semi_topic_font, fg=
 balance_label= tk.Label(root, text = 'Balance', font =basic_font, fg=FG_color,bg = BG_color)
 
 expense_label= tk.Label(root, text = 'EXPENSE', font =basic_font, fg=FG_color,bg = BG_color)
-total_expense_label= tk.Label(root, text= total_expense, font=semi_topic_font, fg='#FF7F7F', bg=BG_color)
+total_expense_label= tk.Label(root, text= f'Rs. {total_expense}', font=semi_topic_font, fg='#FF7F7F', bg=BG_color)
 
 income_label= tk.Label(root, text = 'INCOME', font =basic_font,fg=FG_color, bg = BG_color )
-total_income_label= tk.Label(root, text= total_income, font=semi_topic_font, fg='light green', bg=BG_color)
+total_income_label= tk.Label(root, text=f'Rs. {total_income}', font=semi_topic_font, fg='light green', bg=BG_color)
 
 #paddings
 #text's placements
