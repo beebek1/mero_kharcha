@@ -17,7 +17,7 @@ transaction_list, total_expense, total_income, final_amount,notes=get_transactio
 #function to search items
 
 def search_note():
-    search_query = entry.get().strip()  # Get the search input
+    search_query = search_entry.get().strip()  # Get the search input
     results = []
 
     # Search for transactions that match the note (case-insensitive)
@@ -49,12 +49,12 @@ def search_note():
 
 
 # Create an entry widget for note search
-entry = tk.Entry(root, font=("Arial", 14),width=8)
-entry.place(x=350,y=80)
+search_entry = tk.Entry(root, font=("Arial", 14),width=8)
 
 # Create a search button
 search_button = tk.Button(root, text="Search", font=("Arial", 14),command=search_note)
-search_button.place(x=440,y=80)
+
+
 
 
 
@@ -92,6 +92,8 @@ def create_bottom_layer(root):
     # Create a canvas
     canvas = tk.Canvas(root, width=600, height=100, bg="#3F4E4F", highlightthickness=0)
     canvas.place(x=0,y=540)  # Place the canvas at the bottom of the window
+
+create_bottom_layer(root)
 
 #fonts and colors
 basic_font = ("Andale Mono",'10')
@@ -247,6 +249,13 @@ total_expense_label.place(x=385, y=170)
 income_label.place(x=385, y=210) 
 total_income_label.place(x=385, y=230)
 
+search_button.place(relx=0.8, rely=0.03)
+search_button.lift()
+
+search_entry.place(relx=0.63, rely=0.03)
+search_entry.lift()
+
+
 # #for time and date
 # #month_label.place(x=253,y=265)   #month_label.place(x=76,y=205)
 # day_label.place(x=70, y=330)
@@ -262,7 +271,6 @@ total_income_label.place(x=385, y=230)
 
 
 
-create_bottom_layer(root)
 
 
 #buttons
