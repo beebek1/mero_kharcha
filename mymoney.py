@@ -2,7 +2,6 @@ import tkinter as tk
 from adding_items import adding_data
 from datetime import datetime
 from fetch_transaction import get_transactions
-from tkinter import font 
 from tkinter import ttk
 from tkinter import messagebox
 
@@ -15,38 +14,57 @@ root.configure(bg='#5C7285') #for background color
 #get data from database
 transaction_list, total_expense, total_income, final_amount,notes=get_transactions(1)
 
-#Toplevel for search button
+#function to search items
+
 def search_note():
-
-    search= tk.Toplevel(root)
-    search.geometry('300x300')
-    search.title("Add data")
-    search.configure(bg='white')
-
     search_query = entry.get().strip()  # Get the search input
+    results = []
 
-    # Search for the note
-    if search_query in notes:
-        messagebox.showinfo("Search Result", f"'{search_query}' found!")
+    # Search for transactions that match the note (case-insensitive)
+    for transaction in transaction_list:
+        trans_id, amount, category, notes, trans_type, date, time = transaction
+        if search_query.lower() in notes:
+            results.append({
+                "id": trans_id,
+                "amount": amount,
+                "category": category,
+                "type": trans_type,
+                "date": date,
+                "time": time
+            })
+
+    # Format the results into a string for the label
+    if results:
+        result_text = "Search Results:\n"
+        for res in results:
+            result_text += (f"ID: {res['id']} | Amount: {res['amount']} | "
+                            f"Category: {res['category']} | Type: {res['type']} | "
+                            f"Date: {res['date']} | Time: {res['time']}\n")
     else:
-        messagebox.showinfo("Search Result", f"'{search_query}' not found.")
+        result_text = f"No transactions found matching '{search_query}'."
 
-    search.mainloop()
+
+
+    # Update the results label with the formatted text
 
 
 # Create an entry widget for note search
-entry = tk.Entry(root, font=("Arial", 14), width=30)
+entry = tk.Entry(root, font=("Arial", 14),width=8)
 entry.place(x=350,y=80)
 
 # Create a search button
-search_button = tk.Button(root, text="Search", font=("Arial", 14), command=search_note)
+search_button = tk.Button(root, text="Search", font=("Arial", 14),command=search_note)
 search_button.place(x=440,y=80)
 
 
-style = ttk.Style(root)
-style.theme_use('alt')  # 'clam' is a more neutral theme
-    
-style.configure(
+
+
+
+Button_style = ttk.Style(root)
+
+Button_style.theme_use('alt')  # 'clam' is a more neutral theme
+
+Button_style.configure(
     "Flat.TButton",
     foreground="#112D4E",
     background="#A1E3F9",
@@ -54,7 +72,7 @@ style.configure(
     focusthickness=0,
     padding=(7,7),
     )
-style.map(
+Button_style.map(
     "Flat.TButton",
     background=[("active", "#A1E3F9")],
     foreground=[("active", "#112D4E")]
@@ -90,14 +108,14 @@ now = datetime.now()
 #get month, year, day and time
 month=now.strftime("%B")
 year=now.strftime('%Y')
-day=now.strftime('%d')
+day_c=now.strftime('%d')
 current_time=now.strftime('%I:%M %p')
 pm_am=now.strftime('%p')
 
 #condition section
 
 # Get the day of the week
-day_of_week = now.strftime("%A")
+# day_of_week = now.strftime("%A")
 
 if pm_am == "AM":
     greeting="Hi! GOOD MORNING"
@@ -112,11 +130,91 @@ elif final_amount <0:
 else:
     num_color ='black'
 
-month_label=tk.Label(root,text=f"{month},",bg=BG_color,fg=FG_color )
-day_label=tk.Label(root,text=f'{day},',bg=BG_color,fg=FG_color )
-year_label=tk.Label(root,text=year,bg=BG_color,fg=FG_color )
-current_time_label=tk.Label(root, text=current_time,bg=BG_color,fg=FG_color)
-day_of_week_label=tk.Label(root,text=day_of_week,bg=BG_color,fg=FG_color )
+# #labels
+# month_label=tk.Label(root,text=f"{month},",bg=BG_color,fg=FG_color )
+# day_label=tk.Label(root,text=f'{day},',bg=BG_color,fg=FG_color )
+# year_label=tk.Label(root,text=year,bg=BG_color,fg=FG_color )
+# current_time_label=tk.Label(root, text=current_time,bg=BG_color,fg=FG_color)
+# day_of_week_label=tk.Label(root,text=day_of_week,bg=BG_color,fg=FG_color )
+
+
+
+
+
+#for fetching table in dashboard
+style = ttk.Style(root)
+style.theme_use("clam")  # or another theme that allows styling
+
+# Configure Treeview style. 
+# "Treeview" controls the overall table appearance,
+style.configure("Treeview",
+                background="#5C7285",  # light grey background for rows
+                foreground="black",
+                fieldbackground="#5C7285")  # background color for cells
+
+
+style.configure("Treeview.Heading",
+                background="#5C7285",  # dark color for headings
+                foreground="white",
+                font=("Arial", 12, "bold"))
+
+
+# Define columns (only the required fields)
+columns = ("Time", "Type", "Category", "Amount", "Notes")
+tree = ttk.Treeview(root, columns=columns, show="headings",height= 20)
+
+# Define column headings and width
+column_widths = {
+    "Time": 100,
+    "Type": 80,
+    "Category": 120,
+    "Amount": 100,
+    "Notes": 200
+}
+
+for col in columns:
+    tree.heading(col, text=col)
+    tree.column(col, width=column_widths[col], anchor="center")
+
+# Insert only the required fields into the table
+
+# Add Scrollbar
+scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
+tree.configure(yscroll=scrollbar.set)
+
+    # Add proper suffix to the day (st, nd, rd, th)
+
+
+#to extract month and year and separate them
+for transaction in transaction_list:
+    # Extract month_year and time
+    month_n_year = transaction['month_year']  # e.g., 'February 2025'
+    time = int(transaction['day'])               # e.g., '11:37 AM'
+
+    month = month_n_year.split()[0]  # Get the first element (month)
+    # Add proper suffix to the day (st, nd, rd, th)
+if 11 <= time <= 13:
+    suffix = "th"
+else:
+    suffix = {1: "st", 2: "nd", 3: "rd"}.get(time % 10, "th")
+
+for transaction in transaction_list:
+    # Here, you can format the date or keep it as is
+    formatted_date = f"{time}{suffix} {month}"  # Use your previously defined format_date function
+    tree.insert("", tk.END, values=(formatted_date, transaction["type"], transaction["category"], transaction["amount"], transaction["notes"]))
+
+# Pack widgets
+tree.place(relx=0.01, rely=0.45, relwidth=0.98, relheight=0.45)
+
+
+
+
+#labels for showing details
+# amount_label=tk.Label(root,text='Amount 💰',bg=BG_color,fg=FG_color )
+# Category_label=tk.Label(root,text='Category 📂',bg=BG_color,fg=FG_color )
+# type_label=tk.Label(root,text='Type 📝',bg=BG_color,fg=FG_color )
+# time_label=tk.Label(root,text='Time ⏳',bg=BG_color,fg=FG_color )
+# notes_label=tk.Label(root,text='Notes 🗒️',bg=BG_color,fg=FG_color )
 
 #texts
 mero_kharcha_label= tk.Label(root, text= "Mero Kharcha", font=topic_font ,fg=FG_color, bg="#27374D")
@@ -149,11 +247,20 @@ total_expense_label.place(x=385, y=170)
 income_label.place(x=385, y=210) 
 total_income_label.place(x=385, y=230)
 
-#for time and date
-month_label.place(x=253,y=265)   #month_label.place(x=76,y=205)
-day_label.place(x=70, y=330)
-day_of_week_label.place(x=92, y=330)
-year_label.place(x=313, y=265)
+# #for time and date
+# #month_label.place(x=253,y=265)   #month_label.place(x=76,y=205)
+# day_label.place(x=70, y=330)
+# day_of_week_label.place(x=92, y=330)
+# #year_label.place(x=313, y=265)
+
+#for previous results
+# time_label.place(x=70,y=265)
+# type_label.place(x=172,y=265)
+# Category_label.place(x=274,y=265)
+# amount_label.place(x=376,y=265)
+# notes_label.place(x=480,y=265)
+
+
 
 create_bottom_layer(root)
 
@@ -168,6 +275,5 @@ adding_data_button.place(x=40, y=555)
 analysis_button.place(x=255, y=555)
 categories_button.place(x=440, y=555)
 
-print(notes)
 
 root.mainloop()
