@@ -1,7 +1,26 @@
 from main_database import get_db_connection
 
-def get_transactions(user_id,type=None):
-    # global amount,transaction_list,total_expense,total_income
+def get_unique_notes(user_id):
+    """Fetch unique notes for a user from the transactions table."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute(
+        "SELECT DISTINCT notes FROM transactions WHERE user_id = ?",
+        (user_id,)
+    )
+    
+    notes = cursor.fetchall()
+    conn.close()
+    
+    # Extracting notes from the fetched results
+    unique_notes = [note[0] for note in notes]  # Convert list of tuples to a list of strings
+    return unique_notes
+
+
+
+def get_transactions(user_id, type=None):
+    """Fetch transactions for a user and return total income, expense, final amount, and unique notes."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -15,13 +34,13 @@ def get_transactions(user_id,type=None):
             "SELECT amount, category, notes, type, month_year, time FROM transactions WHERE user_id = ?",
             (user_id,)
         )
+    
     transactions = cursor.fetchall()
     conn.close()
     
-        # Unpacking transactions into separate variables
     transaction_list = []
     for t in transactions:
-        amount, category, notes, type, month_year, time = t  # Unpack tuple into variables
+        amount, category, notes, type, month_year, time = t
         transaction_dict = {
             "amount": float(amount),
             "category": category,
@@ -32,20 +51,17 @@ def get_transactions(user_id,type=None):
         }
         transaction_list.append(transaction_dict)
 
-    total_expense=0
-    total_income=0
-    for transactions in transaction_list:
-        if transactions['type']=='expense':
-            total_expense+=transactions['amount']
+    total_expense = 0
+    total_income = 0
+    for transaction in transaction_list:
+        if transaction['type'] == 'expense':
+            total_expense += transaction['amount']
         else:
-            total_income+=transactions['amount']
+            total_income += transaction['amount']
 
-    final_amount=total_income-total_expense
+    final_amount = total_income - total_expense
+    
+    # Fetch unique notes
+    unique_notes = get_unique_notes(user_id)
 
-
-
-    return transaction_list, total_expense, total_income, final_amount
-
-
-
-
+    return transaction_list, total_expense, total_income, final_amount, unique_notes
