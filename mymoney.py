@@ -33,24 +33,54 @@ def create_main_window():
         }
 
         return month_abbr.get(month, month)
+    
+        #fonts and colors
+    basic_font = ("Andale Mono",'10')
+    topic_font = ("Zapfino", '14','bold')
+    semi_topic_font=("DIN Alternate", '11','bold')
+
+    BG_color='#FFFFFF'
+    FG_color='black'
+    button_color="#3F72AF"
 
     Button_style = ttk.Style(root)
 
-    Button_style.theme_use('alt')  # 'clam' is a more neutral theme
+    Button_style.theme_use('clam')  # 'clam' is a more neutral theme
 
     Button_style.configure(
         "Flat.TButton",
-        foreground="#112D4E",
-        background="#FFFFFF",
+        foreground="black",
+        background="#EEF2F5",
         borderwidth=0,
         focusthickness=0,
         padding=(7,7),
         )
     Button_style.map(
         "Flat.TButton",
-        background=[("active", "#FFFFFF")],
-        foreground=[("active", "#112D4E")]
+        background=[("active", "#B6BABE")],
+        foreground=[("active", "white")]
         )
+
+#for specific buttons
+    Button_style_2 = ttk.Style(root)
+
+    Button_style_2.theme_use('clam')  # 'clam' is a more neutral theme
+
+    Button_style_2.configure(
+        "Custom.TButton",
+        foreground="white",
+        background="#2e69fe",
+        borderwidth=0,
+        focusthickness=0,
+        padding=(7,7),
+        font=semi_topic_font
+        )
+    Button_style_2.map(
+        "Custom.TButton",
+        background=[("active", "#0A3981")],
+        foreground=[("active", "white")]
+        )
+
 
     #for fetching table in dashboard
     style = ttk.Style(root)
@@ -59,13 +89,13 @@ def create_main_window():
     # Configure Treeview style. 
     # "Treeview" controls the overall table appearance,
     style.configure("Treeview",
-                    background="#EBE5C2",  # light grey background for rows
+                    background="#EAE2C6",  # light grey background for rows F0F0F0
                     foreground="black",
-                    fieldbackground="#EBE5C2")  # background color for cells
+                    fieldbackground="#EAE2C6")  # background color for cells
 
 
     style.configure("Treeview.Heading",
-                    background="#EBE5C2",  # dark color for headings
+                    background="#EAE2C6",  # dark color for headings
                     foreground="black",
                     font=("Arial",12, "bold"))
 
@@ -74,7 +104,7 @@ def create_main_window():
     #for extra strip at top
     def create_top_layer(root):
         # Create a canvas
-        canvas = tk.Canvas(root, width=600, height=77, bg="#A27B5C", highlightthickness=0)
+        canvas = tk.Canvas(root, width=600, height=77, bg="#A1A1A1", highlightthickness=0)
         canvas.place(x=0,y=0)  # Place the canvas at the bottom of the window
 
     create_top_layer(root)
@@ -87,14 +117,7 @@ def create_main_window():
 
     create_bottom_layer(root)
 
-    #fonts and colors
-    basic_font = ("Andale Mono",'10')
-    topic_font = ("Zapfino", '14','bold')
-    semi_topic_font=("DIN Alternate", '11','bold')
 
-    BG_color='#FFFFFF'
-    FG_color='black'
-    button_color="#3F72AF"
 
     #Get current date and time
     now = datetime.now()
@@ -233,6 +256,8 @@ def create_main_window():
                         "", tk.END,text=transaction_id,
                         values=(final_2_dates[i], transaction["type"], transaction["category"], f"Rs. {transaction['amount']}", transaction["notes"])
                     )
+                    tree.insert("", "end", values=("-" * 20,"-" * 20,"-" * 20,"-" * 20,"-" * 50))  # Adds a separator row
+
                     # Pack widgets
                     tree2.place(relx=0.01, rely=0.45, relwidth=0.98, relheight=0.45)
 
@@ -328,11 +353,12 @@ def create_main_window():
     for i, transaction in enumerate (reversed(transaction_list)):
         transaction_id=(transaction['id'])
         tree.insert(
-            "", tk.END,text=transaction_id,values=("-" * 10,final_2_dates[i], transaction["type"], transaction["category"], f"Rs. {transaction['amount']}", transaction["notes"])
+            "", tk.END,text=transaction_id,values=(final_2_dates[i], transaction["type"], transaction["category"], f"Rs. {transaction['amount']}", transaction["notes"])
         )
+        tree.insert("", "end", values=("-" * 20,"-" * 20,"-" * 20,"-" * 20,"-" * 50))  # Adds a separator row
 
     #for regular table
-    tree.place(relx=0.01, rely=0.45, relwidth=0.98, relheight=0.45)
+    tree.place(relx=0.0001, rely=0.45, relwidth=1, relheight=0.45)
 
     # Pack widgets
     #after null search it will display previous data
@@ -375,7 +401,7 @@ def create_main_window():
     # notes_label=tk.Label(root,text='Notes 🗒️',bg=BG_color,fg=FG_color )
 
     #texts
-    mero_kharcha_label= tk.Label(root, text= "Mero Kharcha", font=topic_font ,fg=FG_color, bg="#27374D")
+    mero_kharcha_label= tk.Label(root, text= "Mero Kharcha", font=topic_font ,fg=FG_color, bg="#A1A1A1")
 
     greeting_label= tk.Label(root, text= greeting, font=semi_topic_font, fg=FG_color, bg=BG_color)
     username_label= tk.Label(root, text= "BIBEK", font=semi_topic_font, fg=FG_color, bg=BG_color)
@@ -391,10 +417,10 @@ def create_main_window():
     total_income_label= tk.Label(root, text=f'Rs. {total_income}', font=semi_topic_font, fg='light green', bg=BG_color)
 
     # Create an entry widget for note search
-    search_entry = tk.Entry(root, font=("Arial", 14),width=8)
+    search_entry = tk.Entry(root, font=("Arial", 14),width=9)
 
     # Create a search button
-    search_button = tk.Button(root, text="Search", font=("Arial", 14),command=search_note)
+    search_button = ttk.Button(root, text="Search",command=search_note,style="Flat.TButton")
 
 
 
@@ -413,10 +439,10 @@ def create_main_window():
     income_label.place(x=385, y=210) 
     total_income_label.place(x=385, y=230)
 
-    search_button.place(relx=0.8, rely=0.03)
+    search_button.place(relx=0.8, rely=0.0325)
     search_button.lift()
 
-    search_entry.place(relx=0.63, rely=0.03)
+    search_entry.place(relx=0.6095, rely=0.03)
     search_entry.lift()
 
 
@@ -438,16 +464,19 @@ def create_main_window():
 
 
     #buttons
-    adding_data_button= ttk.Button(root, text = 'Add', command= lambda : [root.destroy(), adding_data()],style="Flat.TButton")
-    analysis_button= ttk.Button(root, text = 'Analysis', command= lambda : [root.destroy(), adding_data()], style="Flat.TButton" )
-    categories_button= ttk.Button(root, text = 'Categories', command= lambda : [root.destroy(), adding_data()], style="Flat.TButton")
+    adding_data_button= ttk.Button(root, text = 'Add', command= lambda : [root.destroy(), adding_data()],style="Custom.TButton")
+    analysis_button= ttk.Button(root, text = 'Analysis', command= lambda : [root.destroy(), adding_data()], style="Custom.TButton" )
+    set_budge_button= ttk.Button(root, text = 'Set Budget', command= lambda : [root.destroy(), adding_data()], style="Custom.TButton")
+    Home_button= ttk.Button(root, text = 'Home', command= refresh,style="Custom.TButton")
+    
     delete_button= ttk.Button(root, text = 'Delete', command= delete_selected,style="Flat.TButton")
 
 
     #button's placements
-    adding_data_button.place(x=40, y=555)
-    analysis_button.place(x=255, y=555)
-    categories_button.place(x=440, y=555)
+    Home_button.place(relx=0.03, rely=0.925) 
+    adding_data_button.place(relx=0.29, rely=0.925)  #0.25
+    analysis_button.place(relx=0.54, rely=0.925)
+    set_budge_button.place(relx=0.79, rely=0.925)
 
 
     # delete_button.place_forget()
