@@ -35,7 +35,7 @@ def signin():
     elif password!="1234":
         messagebox.showerror("Invalid","Incorrect password!")
 
-img=PhotoImage(file=r"C:\Tkinter\money.png")
+img=PhotoImage(file="login.png")
 Label(root,image=img,bg="white").place(x=50,y=50)
 
 frame=Frame(root,width=350,height=350,bg="white")
@@ -52,7 +52,7 @@ def on_leave(e):
     if name=='':
         user.insert(0,"Username")
 
-user= Entry(frame,width=25,fg='black',border=2,bg='white',font=('Microsoft YaHei UI Light',11))
+user= Entry(frame,width=25,fg='black',border=0,bg='white',font=('Microsoft YaHei UI Light',11))
 user.place(x=30,y=80)
 user.insert(0,'Username')
 user.bind('<FocusIn>',on_enter)
