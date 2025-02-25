@@ -42,5 +42,14 @@ def create_tables():
     conn.commit()
     conn.close()
 
-create_tables()
+def delete_transaction(transaction_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    # Delete the transaction with the specified ID
+    cursor.execute("DELETE FROM transactions WHERE id = ?", (transaction_id,))
+    conn.commit()
+    conn.close()
+    print(f"Transaction {transaction_id} deleted successfully.")
+
+
 
