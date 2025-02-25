@@ -38,10 +38,10 @@ def create_main_window():
     basic_font = ("Andale Mono",'10')
     topic_font = ("Zapfino", '14','bold')
     semi_topic_font=("DIN Alternate", '11','bold')
+    specific_font=("DIN Alternate", '15','bold')
 
     BG_color='#FFFFFF'
     FG_color='black'
-    button_color="#3F72AF"
 
     Button_style = ttk.Style(root)
 
@@ -69,7 +69,7 @@ def create_main_window():
     Button_style_2.configure(
         "Custom.TButton",
         foreground="white",
-        background="#2e69fe",
+        background="#677D6A",
         borderwidth=0,
         focusthickness=0,
         padding=(7,7),
@@ -77,7 +77,7 @@ def create_main_window():
         )
     Button_style_2.map(
         "Custom.TButton",
-        background=[("active", "#0A3981")],
+        background=[("active", "#1A3636")],
         foreground=[("active", "white")]
         )
 
@@ -89,15 +89,18 @@ def create_main_window():
     # Configure Treeview style. 
     # "Treeview" controls the overall table appearance,
     style.configure("Treeview",
-                    background="#EAE2C6",  # light grey background for rows F0F0F0
+                    background="white",  # light grey background for rows F0F0F0
                     foreground="black",
-                    fieldbackground="#EAE2C6")  # background color for cells
+                    fieldbackground="white"  # background color for cells
+                    ) 
+                    
 
 
     style.configure("Treeview.Heading",
-                    background="#EAE2C6",  # dark color for headings
+                    background="white",  # dark color for headings
                     foreground="black",
-                    font=("Arial",12, "bold"))
+                    font=("Arial",12, "bold"),
+                    relief="flat")
 
 
 
@@ -117,7 +120,18 @@ def create_main_window():
 
     create_bottom_layer(root)
 
+    #create a canvas in the background
 
+    canvas_behind = tk.Canvas(root, width=400, height=130,bg='#D0EFFF',highlightthickness=0)
+    canvas_behind.place(relx=0.15, rely=0.2)
+
+    #canvas for expense
+    canvas_uphind_expense = tk.Canvas(root, width=100, height=55,bg='#FFCCCC',highlightthickness=0)
+    canvas_uphind_expense.place(relx=0.60, rely=0.21)
+
+    #canvas for income
+    canvas_uphind_income = tk.Canvas(root, width=100, height=55,bg='#CCFFCC',highlightthickness=0)
+    canvas_uphind_income.place(relx=0.60, rely=0.315)
 
     #Get current date and time
     now = datetime.now()
@@ -141,9 +155,9 @@ def create_main_window():
 
     #condition for - red + green
     if final_amount >0:
-        num_color='light green'
+        num_color='#006400'
     elif final_amount <0:
-        num_color ='#FF7F7F'
+        num_color ='#C00000'
     else:
         num_color ='black'
 
@@ -256,7 +270,6 @@ def create_main_window():
                         "", tk.END,text=transaction_id,
                         values=(final_2_dates[i], transaction["type"], transaction["category"], f"Rs. {transaction['amount']}", transaction["notes"])
                     )
-                    tree.insert("", "end", values=("-" * 20,"-" * 20,"-" * 20,"-" * 20,"-" * 50))  # Adds a separator row
 
                     # Pack widgets
                     tree2.place(relx=0.01, rely=0.45, relwidth=0.98, relheight=0.45)
@@ -355,8 +368,6 @@ def create_main_window():
         tree.insert(
             "", tk.END,text=transaction_id,values=(final_2_dates[i], transaction["type"], transaction["category"], f"Rs. {transaction['amount']}", transaction["notes"])
         )
-        tree.insert("", "end", values=("-" * 20,"-" * 20,"-" * 20,"-" * 20,"-" * 50))  # Adds a separator row
-
     #for regular table
     tree.place(relx=0.0001, rely=0.45, relwidth=1, relheight=0.45)
 
@@ -406,15 +417,15 @@ def create_main_window():
     greeting_label= tk.Label(root, text= greeting, font=semi_topic_font, fg=FG_color, bg=BG_color)
     username_label= tk.Label(root, text= "BIBEK", font=semi_topic_font, fg=FG_color, bg=BG_color)
 
-    rs_label= tk.Label(root, text= "Rs. ", font=semi_topic_font, fg=FG_color, bg=BG_color)
-    final_amount_label= tk.Label(root, text= final_amount, font=semi_topic_font, fg=num_color, bg=BG_color)
-    balance_label= tk.Label(root, text = 'Balance', font =basic_font, fg=FG_color,bg = BG_color)
+    rs_label= tk.Label(root, text= "Rs. ", font=specific_font, fg=FG_color, bg='#D0EFFF')
+    final_amount_label= tk.Label(root, text= final_amount, font=specific_font, fg=num_color, bg='#D0EFFF')
+    balance_label= tk.Label(root, text = 'Balance', font =basic_font, fg=FG_color,bg = '#D0EFFF')
 
-    expense_label= tk.Label(root, text = 'EXPENSE', font =basic_font, fg=FG_color,bg = BG_color)
-    total_expense_label= tk.Label(root, text= f'Rs. {total_expense}', font=semi_topic_font, fg='#FF7F7F', bg=BG_color)
+    expense_label= tk.Label(root, text = 'EXPENSE', font =basic_font, fg=FG_color,bg = '#FFCCCC')
+    total_expense_label= tk.Label(root, text= f'Rs. {total_expense}', font=semi_topic_font, fg='#8B0000', bg="#FFCCCC")
 
-    income_label= tk.Label(root, text = 'INCOME', font =basic_font,fg=FG_color, bg = BG_color )
-    total_income_label= tk.Label(root, text=f'Rs. {total_income}', font=semi_topic_font, fg='light green', bg=BG_color)
+    income_label= tk.Label(root, text = 'INCOME', font =basic_font,fg=FG_color, bg = '#CCFFCC' )
+    total_income_label= tk.Label(root, text=f'Rs. {total_income}', font=semi_topic_font, fg='#006400', bg="#CCFFCC")
 
     # Create an entry widget for note search
     search_entry = tk.Entry(root, font=("Arial", 14),width=9)
@@ -426,18 +437,20 @@ def create_main_window():
 
     #paddings
     #text's placements
-    mero_kharcha_label.place(x=20, y=6)
-    greeting_label.place(x=50, y=80)
-    username_label.place(x=50,y=105)
+    mero_kharcha_label.place(relx=0.02, rely=0.009) 
+
+    greeting_label.place(relx=0.015, rely=0.13) 
+    username_label.place(relx=0.015, rely=0.165)
+
     rs_label.place(x=110,y=150)
     final_amount_label.place(x=140,y=150)
     balance_label.place(x=110,y=180)
 
-    expense_label.place(x=385, y=150)
-    total_expense_label.place(x=385, y=170)
+    expense_label.place(relx=0.61, rely=0.22) 
+    total_expense_label.place(relx=0.61, rely=0.25) 
 
-    income_label.place(x=385, y=210) 
-    total_income_label.place(x=385, y=230)
+    income_label.place(relx=0.61, rely=0.325)  
+    total_income_label.place(relx=0.61, rely=0.355) 
 
     search_button.place(relx=0.8, rely=0.0325)
     search_button.lift()
