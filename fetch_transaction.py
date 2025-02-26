@@ -1,38 +1,24 @@
 from main_database import get_db_connection
-
-# def get_unique_notes(user_id):
-#     """Fetch unique notes for a user from the transactions table."""
-#     conn = get_db_connection()
-#     cursor = conn.cursor()
-    
-#     cursor.execute(
-#         "SELECT DISTINCT notes FROM transactions WHERE user_id = ?",
-#         (user_id,)
-#     )
-    
-#     notes = cursor.fetchall()
-#     conn.close()
-
-#     # Extracting notes from the fetched results
-#     unique_notes=[]
-#     for note in notes:
-#         unique = note[0]
-#         unique2=unique.lower()
-#         unique_notes.append(unique2)
-  
-#    # Convert list of tuples to a list of strings
-#     return unique_notes
  
 def get_transactions(user_id, type=None):
     """Fetch transactions for a user and return total income, expense, final amount, and unique notes."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    if type:
-        cursor.execute(
-            "SELECT id, amount, category, notes, type, month_year, time, day FROM transactions WHERE user_id = ? AND type = ?",
-            (user_id, type)
-        )
+    if type == 'income':
+        cursor.execute("SELECT category, SUM(amount) FROM transactions WHERE user_id = ? AND type = 'income' GROUP BY category", (user_id,))
+
+        transactions = cursor.fetchall()
+        conn.close()
+        return transactions
+    
+    elif type == 'expense':
+        cursor.execute("SELECT category, SUM(amount) FROM transactions WHERE user_id = ? AND type = 'expense' GROUP BY category", (user_id,))
+        
+        transactions = cursor.fetchall()
+        conn.close()
+    
+        return transactions  # Immediately return, skipping the rest of the code
     else:
         cursor.execute(
             "SELECT id, amount, category, notes, type, month_year, time, day FROM transactions WHERE user_id = ?",
@@ -69,5 +55,12 @@ def get_transactions(user_id, type=None):
     
     # Fetch unique notes
     # unique_notes = get_unique_notes(user_id)
-
+    
     return transaction_list, total_expense, total_income, final_amount
+
+
+
+
+
+
+

@@ -5,6 +5,7 @@ from fetch_transaction import get_transactions
 from tkinter import ttk
 from tkinter import messagebox
 from main_database import delete_transaction
+from analysis import get_analysis
 
 def create_main_window():
     root = tk.Tk()
@@ -478,7 +479,7 @@ def create_main_window():
 
     #buttons
     adding_data_button= ttk.Button(root, text = 'Add', command= lambda : [root.destroy(), adding_data()],style="Custom.TButton")
-    analysis_button= ttk.Button(root, text = 'Analysis', command= lambda : [root.destroy(), adding_data()], style="Custom.TButton" )
+    analysis_button= ttk.Button(root, text = 'Analysis', command= lambda : [root.destroy(), get_analysis() ], style="Custom.TButton" )
     set_budge_button= ttk.Button(root, text = 'Set Budget', command= lambda : [root.destroy(), adding_data()], style="Custom.TButton")
     Home_button= ttk.Button(root, text = 'Home', command= refresh,style="Custom.TButton")
     

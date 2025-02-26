@@ -42,6 +42,7 @@ def create_tables():
     conn.commit()
     conn.close()
 
+#to delete a transaction
 def delete_transaction(transaction_id):
     conn = get_db_connection()
     cursor = conn.cursor()
