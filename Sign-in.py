@@ -72,7 +72,7 @@ def signup():
 
     Button(frame, width=39, pady=7, text="Sign up", bg="#57a1f8", fg='white', border=0, command=check_signup).place(x=35, y=260)
 
-img = PhotoImage(file=r"money.png")
+img = PhotoImage(file="login.png")
 Label(root, image=img, bg="white").place(x=50, y=50)
 
 frame = Frame(root, width=350, height=350, bg="white")
