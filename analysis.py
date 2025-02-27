@@ -4,7 +4,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import ttk
 from threading import Thread
 from fetch_transaction import get_transactions
-
+import subprocess
+from adding_items import adding_data
 
 
 def get_analysis():
@@ -12,13 +13,8 @@ def get_analysis():
     root = tk.Tk()
     root.title("Mero Kharcha")  # Window title
     root.geometry("600x600")  # Window size
-    root.resizable
-    root.configure(bg="white")  # Background color updated
-
-    # Fonts
-    title_font = ("Helvetica", 24, 'bold italic')
-    label_font = ("Helvetica", 12)
-    dropdown_font = ("Helvetica", 12)
+    root.resizable(0,0)
+    root.configure(bg="white")  # Background color update
 
     semi_topic_font=("DIN Alternate", '11','bold')
 
@@ -42,21 +38,18 @@ def get_analysis():
         foreground=[("active", "white")]
         )
 
+#to return to main window
+    def cancel_f():
+        root.destroy()  # Close the current window
+        subprocess.Popen(["python3", "mymoney.py"])
 
     #fetch data from database 
     unfiltered_expense_data=get_transactions(1,'expense')
     unfiltered_income_data=get_transactions(1,'income')
 
-    # # Labels
-    # title_label = tk.Label(root, text="MERO KHARCHA", font=title_font, fg=HIGHLIGHT_COLOR, bg=BG_COLOR)
-    # title_label.grid(row=0, column=0, pady=20, columnspan=2)
-
     # Background color to match your app
-    BG_COLOR = "#b2b2a2"  # Changed to #b2b2a2
     CHART_BG_COLOR = "#e6e6e6"
     TITLE_COLOR = "#333333"
-    TEXT_COLOR = "#666666"
-    HIGHLIGHT_COLOR = "#ffcc00"
 
 
     # Function to generate a pie chart inside the Tkinter window
@@ -124,10 +117,9 @@ def get_analysis():
         for i, (category, amount) in enumerate(zip(categories, amounts)):
             # Adjust rely value to prevent overlap
 
-            # Category label
+                        # Category label
             tk.Label(chart_list_frame, text=f"{category}  ----  Rs.{amount:.2f}", 
-                    font=("Arial", 12), fg=colors[i % len(colors)], bg=CHART_BG_COLOR).place(row=i, column=0,relx=0.54, rely=0.925)   #row=i, column=0, 
-
+                    font=("Arial", 12), fg=colors[i % len(colors)], bg=CHART_BG_COLOR).grid(row=i, column=0)
    #pack(anchor="e", padx=6)
             # Function to run the database creation in a separate thread
 
@@ -168,18 +160,15 @@ def get_analysis():
     root.grid_rowconfigure(2, weight=1)
 
     #buttons
-    adding_data_button= ttk.Button(root, text = 'Add',style="Custom.TButton" )
-    analysis_button= ttk.Button(root, text = 'Analysis', style="Custom.TButton" )
-    set_budget_button= ttk.Button(root, text = 'Set Budget',style="Custom.TButton" )
-    Home_button= ttk.Button(root, text = 'Home',style="Custom.TButton")   
+    adding_data_button= ttk.Button(root, text = 'Add', command= lambda : [root.destroy(),adding_data()],style="Custom.TButton")
+    analysis_button= ttk.Button(root, text = 'Analysis', command= lambda : [root.destroy(), get_analysis() ], style="Custom.TButton" )
 
+    Home_button= ttk.Button(root, text = 'Home', command= lambda : [cancel_f()],style="Custom.TButton")
 
     #button's placements
-    Home_button.place(relx=0.03, rely=0.925) 
+    Home_button.place(relx=0.03, rely=0.925)
     adding_data_button.place(relx=0.29, rely=0.925) 
     analysis_button.place(relx=0.54, rely=0.925)
-    set_budget_button.place(relx=0.79, rely=0.925)
+
 
     root.mainloop()
-
-# get_analysis()

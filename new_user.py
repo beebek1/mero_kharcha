@@ -12,7 +12,6 @@ def add_user(username, email, password):
         cursor.execute("INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
                        (username, email, password))
         conn.commit()
-        print("User registered successfully!")
     except sqlite3.IntegrityError:
         return a 
     except Exception as e:

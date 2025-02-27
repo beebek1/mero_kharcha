@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from new_user import add_user
 from new_user import check_user_credentials
-from mymoney import my1money
+from mymoney import create_main_window
 
 def main_sign_in():
     # Initialize main window
@@ -137,7 +137,7 @@ def main_sign_in():
         
         if user_found:
             root.destroy()  # Close the current window
-            my1money() # Show success message if login is successful
+            create_main_window() # Show success message if login is successful
         else:
             messagebox.showerror("Error", "Invalid Username or Password")  # Show error message if login fails
 
