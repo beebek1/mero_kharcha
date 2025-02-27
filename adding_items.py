@@ -3,6 +3,7 @@ from datetime import datetime
 import subprocess
 from tkinter import ttk , messagebox      #i removed sqlite3 
 from add_transaction import add_transaction
+from mymoney import my1money
 
 #for adding data inside database
 def adding_data():
@@ -86,8 +87,9 @@ def adding_data():
 #to return to main window
     def cancel_f():
         
-        choosing_phase.destroy()  # Close "Add Data" window
-        subprocess.Popen(["python3", "mymoney.py"])  # Reopen the main window
+
+        choosing_phase.destroy()  # Close the current window
+        my1money() # Show success message if login is successful
 
     #functions for buttons
     def expense_f():

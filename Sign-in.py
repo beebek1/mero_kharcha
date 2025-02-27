@@ -1,55 +1,119 @@
 from tkinter import *
 from tkinter import messagebox
+from new_user import add_user
+from new_user import check_user_credentials
+from mymoney import my1money
 
-root = Tk()
-root.title("Login Page")
-root.geometry("925x500+300+200")
-root.config(bg="#fff")
-root.resizable(0, 0)
+def main_sign_in():
+    # Initialize main window
+    root = Tk()
+    root.title("Login Page")
+    root.config(bg="#fff")
+    root.resizable(False, False)
 
-def signin():
-    username = user.get()
-    password = code.get()
+    # Dynamically center the window
+    window_width = 925
+    window_height = 500
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x_position = (screen_width - window_width) // 2
+    y_position = (screen_height - window_height) // 2
+    root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 
-    if username == "admin" and password == "1234":
-        screen = Toplevel(root)
-        screen.title("App")
-        screen.geometry("925x500+300+200")
-        screen.config(bg="white")
+    def signup():
+        sign_window = Toplevel(root)
+        sign_window.title("Sign Up")
+        sign_window.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
+        sign_window.resizable(False, False)
+        sign_window.config(bg="white")
 
-        Label(screen, text="Hello Everyone!", bg='#fff', font=("Calibri", 50, 'bold')).pack(expand=True)
-    else:
-        messagebox.showerror("Invalid", "Incorrect username or password!\nPlease try again.")
+        # Using the same image as in the login page
+        sign_window.img = PhotoImage(file="saving.png")  # Store image reference
+        Label(sign_window, image=sign_window.img, bg="white").place(x=50, y=50)
 
-def signup():
-    sign_window = Toplevel(root)
-    sign_window.title("Sign Up")
-    sign_window.geometry("925x500+300+200")
-    sign_window.resizable(0,0)
-    sign_window.config(bg="white")
+        frame = Frame(sign_window, width=350, height=350, bg="white")
+        frame.place(x=480, y=70)
 
-    img = PhotoImage(file=r"saving.png")
-    Label(sign_window, image=img, bg="white").place(x=50, y=50)
-    sign_window.image = img
+        heading = Label(frame, text="Start Saving Up", fg="#57a1f8", bg="white", font=('Arial', 20, 'bold'))
+        heading.place(x=60, y=5)
 
-    frame = Frame(sign_window, width=350, height=350, bg="white")
+        def create_entry(parent, placeholder, y_pos):
+            entry = Entry(parent, width=25, fg='black', border=0, bg='white', font=('Arial', 11))
+            entry.place(x=30, y=y_pos)
+            entry.insert(0, placeholder)
+
+            def on_enter(e):
+                if entry.get() == placeholder:
+                    entry.delete(0, 'end')
+
+            def on_leave(e):
+                if not entry.get():
+                    entry.insert(0, placeholder)
+
+            entry.bind('<FocusIn>', on_enter)
+            entry.bind('<FocusOut>', on_leave)
+            Frame(parent, width=295, height=2, bg='black').place(x=25, y=y_pos + 27)
+
+            return entry
+
+        signup_user_raw = create_entry(frame, "Username", 80)
+        signup_email_raw = create_entry(frame, "Email", 140)
+        signup_pass_raw = create_entry(frame, "Password", 200)
+
+    #label for returning to sign in window
+        label2 = Label(sign_window, text="Already have an account?", fg='black', bg='white', font=('Arial', 9))
+        label2.place(x=540, y=380)
+
+        #button for returning to sign in window
+        sign_in = Button(sign_window, width=6, text="Sign in", border=0, highlightbackground="white", cursor='hand2', fg="#57a1f8",command= lambda : [sign_window.destroy()], borderwidth= 0)  #remaining added command
+        sign_in.place(x=700, y=378)
+
+        def final_save_new_user():
+
+            # Retrieve actual values from the entry fields
+            username = signup_user_raw.get().strip()  # Use strip() to remove any extra spaces
+            email = signup_email_raw.get().strip()
+            password = signup_pass_raw.get().strip()
+
+            # Pass the actual values to the add_user function
+            a = add_user(username, email, password)
+
+            if a == 0:
+                messagebox.showinfo("error", "Account already Exists!")
+                sign_window.destroy()
+            else:
+                messagebox.showinfo("Success", "Account created successfully!")
+                sign_window.destroy()
+
+        Button(frame, width=39, pady=7, text="Sign up", bg="#57a1f8", fg='white', border=0,
+            command= final_save_new_user).place(x=35, y=260)
+        
+    # Login Page UI
+    img = PhotoImage(file="login.png")
+    Label(root, image=img, bg="white").place(x=50, y=50)
+
+    frame = Frame(root, width=350, height=350, bg="white")
     frame.place(x=480, y=70)
 
-    heading = Label(frame, text="Start Saving Up", fg="#57a1f8", bg="white", font=('Microsoft YaHei UI Light', 23, 'bold'))
-    heading.place(x=60, y=5)
+    heading = Label(frame, text="Sign in", fg="#57a1f8", bg="white", font=('Arial', 20, 'bold'))
+    heading.place(x=100, y=5)
 
-    def create_entry(parent, placeholder, y_pos):
-        entry = Entry(parent, width=25, fg='black', border=0, bg='white', font=('Microsoft YaHei UI Light', 11))
+    def create_input(parent, placeholder, y_pos, hide_text=False):
+        entry = Entry(parent, width=25, fg='black', border=0, bg='white', font=('Arial', 11))
         entry.place(x=30, y=y_pos)
         entry.insert(0, placeholder)
 
         def on_enter(e):
             if entry.get() == placeholder:
                 entry.delete(0, 'end')
+                if hide_text:
+                    entry.config(show="*")
 
         def on_leave(e):
             if not entry.get():
                 entry.insert(0, placeholder)
+                if hide_text:
+                    entry.config(show="")
 
         entry.bind('<FocusIn>', on_enter)
         entry.bind('<FocusOut>', on_leave)
@@ -57,70 +121,36 @@ def signup():
 
         return entry
 
-    signup_user = create_entry(frame, "Username", 80)
-    signup_email = create_entry(frame, "Email", 140)
-    signup_pass = create_entry(frame, "Password", 200)
+    # Username Entry
+    user = create_input(frame, "Username", 80)
 
-    def check_signup():
-        if not signup_user.get() or signup_user.get() == "Username" or \
-           not signup_email.get() or signup_email.get() == "Email" or \
-           not signup_pass.get() or signup_pass.get() == "Password":
-            messagebox.showerror("Invalid Entry", "Invalid entry!") #changed error message
-            return
+    # Password Entry
+    code = create_input(frame, "Password", 150, hide_text=True)
 
-        messagebox.showinfo("Success", "Account Created!")
+    #check credentials
 
-    Button(frame, width=39, pady=7, text="Sign up", bg="#57a1f8", fg='white', border=0, command=check_signup).place(x=35, y=260)
+    def signin_credentials_check():
+        username = user.get()
+        password = code.get()
 
-img = PhotoImage(file="login.png")
-Label(root, image=img, bg="white").place(x=50, y=50)
+        user_found= check_user_credentials(username, password)
+        
+        if user_found:
+            root.destroy()  # Close the current window
+            my1money() # Show success message if login is successful
+        else:
+            messagebox.showerror("Error", "Invalid Username or Password")  # Show error message if login fails
 
-frame = Frame(root, width=350, height=350, bg="white")
-frame.place(x=480, y=70)
+    # Sign in Button
+    Button(frame, width=39, pady=7, text="Sign in", bg="#57a1f8", fg='white', border=0, command=signin_credentials_check).place(x=35, y=204)
 
-heading = Label(frame, text="Sign in", fg="#57a1f8", bg="white", font=('Microsoft YaHei UI Light', 23, 'bold'))
-heading.place(x=100, y=5)
+    label = Label(frame, text="Don't have an account?", fg='black', bg='white', font=('Arial', 9))
+    label.place(x=75, y=270)
 
-def on_enter(e):
-    if user.get() == "Username":
-        user.delete(0, 'end')
+    sign_up = Button(frame, width=6, text="Sign up", border=0, bg="white", cursor='hand2', fg="#57a1f8", command=signup )  #remaining added command
+    sign_up.place(x=215, y=270)
 
-def on_leave(e):
-    if not user.get():
-        user.insert(0, "Username")
-
-user = Entry(frame, width=25, fg='black', border=0, bg='white', font=('Microsoft YaHei UI Light', 11))
-user.place(x=30, y=80)
-user.insert(0, 'Username')
-user.bind('<FocusIn>', on_enter)
-user.bind('<FocusOut>', on_leave)
-
-Frame(frame, width=295, height=2, bg='black').place(x=25, y=107)
-
-def on_enter1(e):
-    if code.get() == "Password":
-        code.delete(0, 'end')
-        code.config(show="*")
-
-def on_leave1(e):
-    if not code.get():
-        code.insert(0, "Password")
-        code.config(show="")
-
-code = Entry(frame, width=25, fg='black', border=0, bg='white', font=('Microsoft YaHei UI Light', 11))
-code.place(x=30, y=150)
-code.insert(0, 'Password')
-code.bind('<FocusIn>', on_enter1)
-code.bind('<FocusOut>', on_leave1)
-
-Frame(frame, width=295, height=2, bg='black').place(x=25, y=177)
-
-Button(frame, width=39, pady=7, text="Sign in", bg="#57a1f8", fg='white', border=0, command=signin).place(x=35, y=204)
-
-label = Label(frame, text="Don't have an account?", fg='black', bg='white', font=('Microsoft YaHei UI Light', 9))
-label.place(x=75, y=270)
-
-sign_up = Button(frame, width=6, text="Sign up", border=0, bg="white", cursor='hand2', fg="#57a1f8", command=signup)
-sign_up.place(x=215, y=270)
-
-root.mainloop()
+    root.mainloop()
+def to_open():
+    main_sign_in()
+main_sign_in()

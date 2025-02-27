@@ -5,17 +5,43 @@ from tkinter import ttk
 from threading import Thread
 from fetch_transaction import get_transactions
 
+
+
 def get_analysis():
     # Tkinter GUI
     root = tk.Tk()
     root.title("Mero Kharcha")  # Window title
     root.geometry("600x600")  # Window size
+    root.resizable
     root.configure(bg="white")  # Background color updated
 
     # Fonts
     title_font = ("Helvetica", 24, 'bold italic')
     label_font = ("Helvetica", 12)
     dropdown_font = ("Helvetica", 12)
+
+    semi_topic_font=("DIN Alternate", '11','bold')
+
+    #for specific buttons
+    Button_style_2 = ttk.Style(root)
+
+    Button_style_2.theme_use('clam')  # 'clam' is a more neutral theme
+
+    Button_style_2.configure(
+        "Custom.TButton",
+        foreground="white",
+        background="#677D6A",
+        borderwidth=0,
+        focusthickness=0,
+        padding=(7,7),
+        font=semi_topic_font
+        )
+    Button_style_2.map(
+        "Custom.TButton",
+        background=[("active", "#1A3636")],
+        foreground=[("active", "white")]
+        )
+
 
     #fetch data from database 
     unfiltered_expense_data=get_transactions(1,'expense')
@@ -31,6 +57,7 @@ def get_analysis():
     TITLE_COLOR = "#333333"
     TEXT_COLOR = "#666666"
     HIGHLIGHT_COLOR = "#ffcc00"
+
 
     # Function to generate a pie chart inside the Tkinter window
     def generate_pie_chart(*args):
@@ -66,7 +93,7 @@ def get_analysis():
         percentages = [(amt / total) * 100 for amt in amounts]
 
         # Create a pie chart using Matplotlib
-        fig, ax = plt.subplots(figsize=(5, 5))
+        fig, ax = plt.subplots(figsize=(4, 4 ))
         wedges, texts, autotexts = ax.pie(
             amounts, 
             labels=None,  
@@ -91,15 +118,18 @@ def get_analysis():
         # Embed the pie chart into Tkinter
         canvas = FigureCanvasTkAgg(fig, master=chart_list_frame)
         canvas.draw()
-        canvas.get_tk_widget().pack()
+        canvas.get_tk_widget().place(x=0,y=10)
 
         # Add category details below with a line separator
         for i, (category, amount) in enumerate(zip(categories, amounts)):
-            tk.Label(chart_list_frame, text=f"{category}  ----  ₹{amount:.2f}", 
-                    font=("Arial", 12), fg=colors[i % len(colors)], bg=CHART_BG_COLOR).pack(anchor="w", padx=10)
-            tk.Label(chart_list_frame, text="-" * 50, fg="black", bg=CHART_BG_COLOR).pack(anchor="w", padx=10)
+            # Adjust rely value to prevent overlap
 
-    # Function to run the database creation in a separate thread
+            # Category label
+            tk.Label(chart_list_frame, text=f"{category}  ----  Rs.{amount:.2f}", 
+                    font=("Arial", 12), fg=colors[i % len(colors)], bg=CHART_BG_COLOR).place(row=i, column=0,relx=0.54, rely=0.925)   #row=i, column=0, 
+
+   #pack(anchor="e", padx=6)
+            # Function to run the database creation in a separate thread
 
     # Create a style for the dropdown
     style = ttk.Style()
@@ -126,17 +156,30 @@ def get_analysis():
                                 font=("Helvetica", 12), 
                                 style="TCombobox", 
                                 state="readonly")
-    chart_dropdown.grid(row=1, column=0, pady=10, padx=20)
+    chart_dropdown.grid(row=1, column=0, pady=10, padx=10)
     chart_dropdown.bind("<<ComboboxSelected>>", generate_pie_chart)
 
     # Frame to hold the pie chart and category list
-    chart_list_frame = tk.Frame(root, bg=CHART_BG_COLOR, bd=2, relief=tk.SUNKEN)
-    chart_list_frame.grid(row=2, column=0, padx=20, pady=20, sticky="nsew", columnspan=2)
-    print("it is working")
+    chart_list_frame = tk.Frame(root, bg=CHART_BG_COLOR, bd=2,height=300)
+    chart_list_frame.grid(row=2, column=0, padx=0, pady=0, sticky="nsew")
 
     # Configure grid weights for responsiveness
     root.grid_columnconfigure(0, weight=1)
     root.grid_rowconfigure(2, weight=1)
 
+    #buttons
+    adding_data_button= ttk.Button(root, text = 'Add',style="Custom.TButton" )
+    analysis_button= ttk.Button(root, text = 'Analysis', style="Custom.TButton" )
+    set_budget_button= ttk.Button(root, text = 'Set Budget',style="Custom.TButton" )
+    Home_button= ttk.Button(root, text = 'Home',style="Custom.TButton")   
+
+
+    #button's placements
+    Home_button.place(relx=0.03, rely=0.925) 
+    adding_data_button.place(relx=0.29, rely=0.925) 
+    analysis_button.place(relx=0.54, rely=0.925)
+    set_budget_button.place(relx=0.79, rely=0.925)
 
     root.mainloop()
+
+# get_analysis()

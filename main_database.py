@@ -3,10 +3,14 @@ import sqlite3
 DB_NAME = "user_database.db"  # Shared database file
 
 def get_db_connection():
-    """Establish and return a connection to the database."""
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row  # Enables dictionary-like row access
-    return conn
+    """Establish and return a connection to the SQLite database."""
+    try:
+        conn = sqlite3.connect(DB_NAME)  # Increase timeout if needed
+        print("Database connection successful!")
+        return conn  # Return the connection for further use
+    except sqlite3.Error as e:
+        print(f"Database connection failed: {e}")
+        return None
 
 def create_tables():
     """Create tables for users and transactions."""
@@ -17,9 +21,8 @@ def create_tables():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY,
-            first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
             username TEXT UNIQUE NOT NULL,
+            email TEXT NOT NULL,
             password TEXT NOT NULL
         )
     ''')
@@ -51,6 +54,4 @@ def delete_transaction(transaction_id):
     conn.commit()
     conn.close()
     print(f"Transaction {transaction_id} deleted successfully.")
-
-
 
